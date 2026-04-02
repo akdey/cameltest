@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAMEL-AI Cyber Simulation Dashboard</title>
+    <style>
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 20px; }
+        .controls { display: flex; gap: 10px; }
+        button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #2563eb; }
+        #terminal { background: #000; border: 1px solid #334155; border-radius: 8px; padding: 20px; height: 60vh; overflow-y: auto; font-family: 'Fira Code', monospace; line-height: 1.5; }
+        .log-entry { margin-bottom: 10px; animation: fadeIn 0.3s ease; }
+        .agent { font-weight: bold; color: #60a5fa; }
+        .content { color: #cbd5e1; }
+        .type-system { color: #facc15; font-style: italic; }
+        .type-phase { color: #fb7185; font-weight: bold; border-left: 3px solid #fb7185; padding-left: 10px; }
+        .type-success { color: #4ade80; font-weight: bold; text-transform: uppercase; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CAMEL-AI Hacker Society</h1>
+        <div class="controls">
+            <button onclick="startSimulation()">Start Full Simulation</button>
+            <button onclick="startScan()">Run Code Scan</button>
+        </div>
+    </div>
+    <div id="terminal">
+        <div class="log-entry type-system">Connecting to WebSocket...</div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}/ws/logs`);
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const entry = document.createElement('div');
+            entry.className = `log-entry type-${data.type}`;
+            entry.innerHTML = `<span class="agent">[${data.agent}]</span> <span class="content">${data.content}</span>`;
+            terminal.appendChild(entry);
+            terminal.scrollTop = terminal.scrollHeight;
+        };
+
+        ws.onopen = () => {
+            console.log("WebSocket connected.");
+        };
+
+        async function startSimulation() {
+            console.log("Triggering Full Simulation...");
+            await fetch(`${window.location.origin}/simulation/start`, { method: 'POST' });
+        }
+
+        async function startScan() {
+            console.log("Triggering Code Scan...");
+            await fetch(`${window.location.origin}/analysis/scan`, { method: 'POST' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "vulnerable-target-app"
+version = "0.1.0"
+description = "Vulnerable Local API for Cyber Simulation"
+authors = ["Security Admin <admin@localhost>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# Outdated versions with potential known vulnerabilities
+fastapi = "0.95.0"
+uvicorn = "0.22.0"
+pydantic = "1.10.7"
+sqlalchemy = "1.4.41"
+requests = "2.28.1"
+urllib3 = "1.26.4"
+sqlmodel = "0.0.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
